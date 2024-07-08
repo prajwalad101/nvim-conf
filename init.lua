@@ -144,10 +144,26 @@ vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup({
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
+  -- {
+  --   'JoosepAlviste/nvim-ts-context-commentstring',
+  --   opts = { enable_autocmd = false },
+  -- },
 
   -- "gc" to comment visual regions/lines
-  { 'numToStr/Comment.nvim', opts = {} },
-
+  --
+  {
+    'numToStr/Comment.nvim',
+    config = function()
+      ---@diagnostic disable-next-line: missing-fields
+      require('Comment').setup {
+        pre_hook = require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook(),
+      }
+    end,
+    dependencies = {
+      { 'JoosepAlviste/nvim-ts-context-commentstring', opts = { enable_autocmd = false } },
+      'nvim-treesitter/nvim-treesitter',
+    },
+  },
   {
     'stevearc/oil.nvim',
     opts = {},
@@ -787,6 +803,14 @@ require('lazy').setup({
       { '<c-k>', '<cmd><C-U>TmuxNavigateUp<cr>' },
       { '<c-l>', '<cmd><C-U>TmuxNavigateRight<cr>' },
       { '<c-\\>', '<cmd><C-U>TmuxNavigatePrevious<cr>' },
+    },
+  },
+  {
+    {
+      'supermaven-inc/supermaven-nvim',
+      config = function()
+        require('supermaven-nvim').setup {}
+      end,
     },
   },
   -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
